@@ -25,7 +25,8 @@ class UserController extends Controller
                         $userRegistered->api_token = Str::random(100);
                         $userRegistered->save();
                         return response()->json(["token" => $userRegistered->api_token,
-                            "user" => ['username' => $userRegistered->username,
+                            "user" => ['id' => $userRegistered->id,
+                                'username' => $userRegistered->username,
                                 'username_color' => $userRegistered->username_color,
                                 'user_picture' => $userRegistered->user_picture]]);
                     } else {
