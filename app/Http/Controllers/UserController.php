@@ -17,20 +17,25 @@ class UserController extends Controller
             if (strlen($request->username) < 20) {
                 $validateUsername = User::where("username", "=", $request->username)->first();
                 if (!$validateUsername) {
-                    $validateEmail = User::whereEmail($request->email)->first();
-                    if (!$validateEmail) {
-                        $user['password'] = Hash::make($request->password);
-                        User::create($user);
-                        $userRegistered = User::where("username", "=", $request->username)->first();
-                        $userRegistered->api_token = Str::random(100);
-                        $userRegistered->save();
-                        return response()->json(["token" => $userRegistered->api_token,
-                            "user" => ['id' => $userRegistered->id,
-                                'username' => $userRegistered->username,
-                                'username_color' => $userRegistered->username_color,
-                                'user_picture' => $userRegistered->user_picture]]);
-                    } else {
-                        return response()->json(["error" => "email already registered"]);
+                    if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+                        $validateEmail = User::whereEmail($request->email)->first();
+                        if (!$validateEmail) {
+                            $user['password'] = Hash::make($request->password);
+                            User::create($user);
+                            $userRegistered = User::where("username", "=", $request->username)->first();
+                            $userRegistered->api_token = Str::random(100);
+                            $userRegistered->save();
+                            return response()->json([
+                                "user" => ['id' => $userRegistered->id,
+                                    'token'=> $userRegistered->api_token,
+                                    'username' => $userRegistered->username,
+                                    'username_color' => $userRegistered->username_color,
+                                    'user_picture' => $userRegistered->user_picture]]);
+                        } else {
+                            return response()->json(["error" => "email already registered"]);
+                        }
+                    }else{
+                        return response()->json(["error" => "put a valid email"]);
                     }
                 } else {
                     return response()->json(["error" => "username already registered"]);
