@@ -77,4 +77,13 @@ class UserController extends Controller
             return response()->json(["error" => "Fill All The Fields"]);
         }
     }
+
+
+    function logout()
+    {
+        $user = auth()->user();
+        $user->api_token = null;
+        $user->save();
+        return response()->json(['success' => 'GoodBye! '.$user->username], 200);
+    }
 }
