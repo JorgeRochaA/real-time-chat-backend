@@ -19,7 +19,6 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password',100);
             $table->string("username_color",100);
-            $table->string("user_picture",1000);
             $table->string("api_token")->nullable();
             $table->timestamps();
         });

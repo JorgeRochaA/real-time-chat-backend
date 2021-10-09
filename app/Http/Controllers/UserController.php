@@ -13,7 +13,7 @@ class UserController extends Controller
     {
         $user = $request->all();
 
-        if ($request->username && $request->email && $request->password && $request->username_color && $request->user_picture) {
+        if ($request->username && $request->email && $request->password && $request->username_color) {
             if (strlen($request->username) < 20) {
                 $validateUsername = User::where("username", "=", $request->username)->first();
                 if (!$validateUsername) {
@@ -29,8 +29,7 @@ class UserController extends Controller
                                 "user" => ['id' => $userRegistered->id,
                                     'token' => $userRegistered->api_token,
                                     'username' => $userRegistered->username,
-                                    'username_color' => $userRegistered->username_color,
-                                    'user_picture' => $userRegistered->user_picture]]);
+                                    'username_color' => $userRegistered->username_color]]);
                         } else {
                             return response()->json(["error" => "Email Already Registered"]);
                         }
@@ -62,8 +61,7 @@ class UserController extends Controller
                             "user" => ['id' => $user->id,
                                 'token' => $user->api_token,
                                 'username' => $user->username,
-                                'username_color' => $user->username_color,
-                                'user_picture' => $user->user_picture]]);
+                                'username_color' => $user->username_color]]);
                     } else {
                         return response()->json(["error" => "Password Don't Match"]);
                     }

@@ -21,4 +21,8 @@ Route::post("register","App\Http\Controllers\UserController@signUp");
 Route::post("login","App\Http\Controllers\UserController@login");
 Route::group(['middleware'=>'auth:api'],function (){
 Route::post("logout", "App\Http\Controllers\UserController@logout");
+//Create Message
+    Route::post("message/create","App\Http\Controllers\MessageController@insertMessage");
+    //Get Messages
+    Route::get("message/get","App\Http\Controllers\MessageController@getMessages");
 });
