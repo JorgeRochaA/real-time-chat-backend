@@ -17,7 +17,7 @@ class MessageController extends Controller
                 if ($user->api_token == $request->token) { // validate token
                     if (strlen($request->message) <= 148) {
                         if (strlen($request->date) <= 10) {
-                            if (strlen($request->hour) <= 7) {
+                            if (strlen($request->hour) <= 8) {
                                 $message = ["username" => $user->username,
                                     "message" => $request->message, "date" => $request->date, "hour" => $request->hour,
                                     "username_color" => $user->username_color];
@@ -25,7 +25,7 @@ class MessageController extends Controller
                                 event(new MessageEvent(json_encode($message)));
                                 return response()->json(["success" => "message created"]);
                             } else {
-                                return response()->json(["error" => "Hour Max Length Is 7 Letters"]);
+                                return response()->json(["error" => "Hour Max Length Is 8 Letters"]);
                             }
                         } else {
                             return response()->json(["error" => "Date Max Length Is 10 Letters"]);

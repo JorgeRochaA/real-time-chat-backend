@@ -18,7 +18,7 @@ class CreateMessagesTable extends Migration
             $table->string("username",20);
             $table->string("message",148);
             $table->string("date",10);
-            $table->string("hour",7);
+            $table->string("hour",8);
             $table->string("username_color",100);
             $table->timestamps();
         });
