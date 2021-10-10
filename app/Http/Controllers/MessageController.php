@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageEvent;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class MessageController extends Controller
                                     "message" => $request->message, "date" => $request->date, "hour" => $request->hour,
                                     "username_color" => $user->username_color];
                                 Message::create($message);
+                                event(new MessageEvent(json_encode($message)));
                                 return response()->json(["success" => "message created"]);
                             } else {
                                 return response()->json(["error" => "Hour Max Length Is 7 Letters"]);
