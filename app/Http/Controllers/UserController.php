@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\InfoEvent;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,6 +26,7 @@ class UserController extends Controller
                             $userRegistered = User::where("username", "=", $request->username)->first();
                             $userRegistered->api_token = Str::random(100);
                             $userRegistered->save();
+                            event(new InfoEvent($userRegistered->username." Join The Room"));
                             return response()->json([
                                 "user" => ['id' => $userRegistered->id,
                                     'token' => $userRegistered->api_token,
@@ -57,6 +59,7 @@ class UserController extends Controller
                     if (Hash::check($request->password, $user->password)) {
                         $user->api_token = Str::random(100);
                         $user->save();
+                        event(new InfoEvent($user->username." Join The Room"));
                         return response()->json([
                             "user" => ['id' => $user->id,
                                 'token' => $user->api_token,
@@ -82,6 +85,7 @@ class UserController extends Controller
         $user = auth()->user();
         $user->api_token = null;
         $user->save();
+        event(new InfoEvent($user->username." Left The Room"));
         return response()->json(['success' => 'GoodBye! '.$user->username], 200);
     }
 }
