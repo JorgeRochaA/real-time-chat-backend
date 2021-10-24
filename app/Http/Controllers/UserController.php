@@ -66,7 +66,7 @@ class UserController extends Controller
                                 'username' => $user->username,
                                 'username_color' => $user->username_color]]);
                     } else {
-                        return response()->json(["error" => "Password Don't Match"]);
+                        return response()->json(["error" => "Wrong Credentials!"]);
                     }
                 } else {
                     return response()->json(["error" => "Email Not Match With Our Records"]);
