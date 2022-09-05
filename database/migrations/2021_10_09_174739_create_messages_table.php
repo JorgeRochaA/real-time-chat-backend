@@ -15,12 +15,11 @@ class CreateMessagesTable extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->string("username",20);
-            $table->string("message",148);
-            $table->string("date",10);
-            $table->string("hour",8);
-            $table->string("username_color",100);
-            $table->timestamps();
+            $table->string("username", 20);
+            $table->string("message", 148);
+            $table->string("date", 10);
+            $table->string("hour", 8);
+            $table->string("username_color", 100);
         });
     }
 

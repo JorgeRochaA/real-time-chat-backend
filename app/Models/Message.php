@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Message extends Model
 {
     use HasFactory;
-
-    protected $fillable = ["username","message","date","hour","username_color"];
+    public $timestamps = false;
+    protected $fillable = ["username", "message", "date", "hour", "username_color"];
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\InfoEvent;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -10,72 +11,66 @@ use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
-    public function signUp(Request $request)
+    public function signUp(UserRequest $request)
     {
-        $user = $request->all();
+        $user = [
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'username_color' => $request->username_color,
+            'api_token' => Str::random(100),
+        ];
 
-        if ($request->username && $request->email && $request->password && $request->username_color) {
-            if (strlen($request->username) < 20) {
-                $validateUsername = User::where("username", "=", $request->username)->first();
-                if (!$validateUsername) {
-                    if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
-                        $validateEmail = User::whereEmail($request->email)->first();
-                        if (!$validateEmail) {
-                            $user['password'] = Hash::make($request->password);
-                            User::create($user);
-                            $userRegistered = User::where("username", "=", $request->username)->first();
-                            $userRegistered->api_token = Str::random(100);
-                            $userRegistered->save();
-                            event(new InfoEvent($userRegistered->username." Join The Room"));
-                            return response()->json([
-                                "user" => ['id' => $userRegistered->id,
-                                    'token' => $userRegistered->api_token,
-                                    'username' => $userRegistered->username,
-                                    'username_color' => $userRegistered->username_color]]);
-                        } else {
-                            return response()->json(["error" => "Email Already Registered"]);
-                        }
-                    } else {
-                        return response()->json(["error" => "Put A Valid Email"]);
-                    }
-                } else {
-                    return response()->json(["error" => "Username Already Registered"]);
-                }
-
-            } else {
-                return response()->json(["error" => "Username Max Length Is 20 Letters"]);
-            }
+        $userRegistered =  User::create($user);
+        if ($userRegistered) {
+            event(new InfoEvent($userRegistered->username . " Join The Room"));
+            return response()->json([
+                "user" => [
+                    'id' => $userRegistered->id,
+                    'token' => $userRegistered->api_token,
+                    'username' => $userRegistered->username,
+                    'username_color' => $userRegistered->username_color
+                ]
+            ]);
         } else {
-            return response()->json(["error" => "Fill All The Fields"]);
+            return response()->json([
+                'message' => 'There was an error registering the user'
+            ], 500);
         }
     }
 
     public function login(Request $request)
     {
-        if ($request->email && $request->password) {
-            if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
-                $user = User::whereEmail($request->email)->first();
-                if ($user) {
-                    if (Hash::check($request->password, $user->password)) {
-                        $user->api_token = Str::random(100);
-                        $user->save();
-                        event(new InfoEvent($user->username." Join The Room"));
-                        return response()->json([
-                            "user" => ['id' => $user->id,
-                                'token' => $user->api_token,
-                                'username' => $user->username,
-                                'username_color' => $user->username_color]]);
-                    } else {
-                        return response()->json(["error" => "Wrong Credentials!"]);
-                    }
+        $validateCredentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string'
+        ]);
+
+        if ($validateCredentials) {
+            $user = User::whereEmail($request->email)->first();
+            if ($user) {
+                if (Hash::check($request->password, $user->password)) {
+                    $user->api_token = Str::random(100);
+                    $user->save();
+                    event(new InfoEvent($user->username . " Join The Room"));
+                    return response()->json([
+                        "user" => [
+                            'id' => $user->id,
+                            'token' => $user->api_token,
+                            'username' => $user->username,
+                            'username_color' => $user->username_color
+                        ]
+                    ]);
                 } else {
-                    return response()->json(["error" => "Email Not Match With Our Records"]);
+                    return response()->json(["error" => "wrong credentials"]);
                 }
             } else {
-                return response()->json(["error" => "Put A Valid Email"]);
+                return response()->json(["error" => "wrong credentials"]);
             }
         } else {
-            return response()->json(["error" => "Fill All The Fields"]);
+            return response()->json([
+                'message' => 'wrong credentials'
+            ]);
         }
     }
 
@@ -85,7 +80,7 @@ class UserController extends Controller
         $user = auth()->user();
         $user->api_token = null;
         $user->save();
-        event(new InfoEvent($user->username." Left The Room"));
-        return response()->json(['success' => 'GoodBye! '.$user->username], 200);
+        event(new InfoEvent($user->username . " Left The Room"));
+        return response()->json(['success' => 'GoodBye! ' . $user->username], 200);
     }
 }

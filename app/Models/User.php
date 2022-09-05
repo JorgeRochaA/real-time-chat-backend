@@ -22,7 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'username_color',
-        'user_picture'
+        'api_token',
     ];
 
     /**
