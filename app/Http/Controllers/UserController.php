@@ -62,15 +62,15 @@ class UserController extends Controller
                         ]
                     ]);
                 } else {
-                    return response()->json(["error" => "wrong credentials"]);
+                    return response()->json(["error" => "wrong credentials"], 401);
                 }
             } else {
-                return response()->json(["error" => "wrong credentials"]);
+                return response()->json(["error" => "wrong credentials"], 401);
             }
         } else {
             return response()->json([
                 'message' => 'wrong credentials'
-            ]);
+            ], 401);
         }
     }
 
