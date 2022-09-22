@@ -16,7 +16,7 @@ class MessageController extends Controller
             $userDatabase = auth()->user();
             if ($user->api_token == $request->token) {
                 $message = [
-                    "username" => $user->username,
+                    "username" => $userDatabase->username,
                     "message" => $request->message,
                     "date" => $request->date,
                     "hour" => $request->hour,

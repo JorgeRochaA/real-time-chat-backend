@@ -15,7 +15,6 @@ class MessageRequest extends FormRequest
     {
         return [
             'username_id' => 'required|integer',
-            'username' => 'required|string|max:20',
             'message' => 'required|string|max:148',
             'date' => 'required|string|max:10',
             'hour' => 'required|string|max:8',
