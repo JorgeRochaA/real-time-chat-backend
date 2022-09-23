@@ -24,5 +24,5 @@ Route::group(['middleware' => 'auth:api'], function () {
     //Create Message
     Route::post("user/message/create", "App\Http\Controllers\MessageController@insertMessage");
     //Get Messages
-    Route::get("user/message/get", "App\Http\Controllers\MessageController@getMessages");
+    Route::get("user/message/getAll", "App\Http\Controllers\MessageController@getMessages");
 });
