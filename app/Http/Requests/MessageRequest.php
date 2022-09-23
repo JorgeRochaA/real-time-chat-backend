@@ -18,7 +18,6 @@ class MessageRequest extends FormRequest
             'message' => 'required|string|max:148',
             'date' => 'required|string|max:10',
             'hour' => 'required|string|max:8',
-            'username_color' => 'required|string|max:100',
             'token' => 'required|string'
         ];
     }

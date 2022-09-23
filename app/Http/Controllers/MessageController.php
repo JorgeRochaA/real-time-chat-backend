@@ -22,9 +22,11 @@ class MessageController extends Controller
                     "hour" => $request->hour,
                     "username_color" => $user->username_color
                 ];
-                Message::create($message);
-                event(new MessageEvent(json_encode($message)));
-                return response()->json(["success" => "message created"]);
+                $messageCreated = Message::create($message);
+                event(new MessageEvent(json_encode($messageCreated)));
+                return response()->json([
+                    "success" => "message created"
+                ]);
             } else {
                 return response()->json(["error" => "Unauthorized"]);
             }
